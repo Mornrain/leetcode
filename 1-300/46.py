@@ -16,14 +16,19 @@
 
 class Solution:
     def permute(self, nums):
-        for i in nums:
+        res = []
 
-            array.append(i)
+        def backtrack(nums, tmp):
+            if not nums:
+                res.append(tmp)
+                return
+            for i in range(len(nums)):
+                backtrack(nums[:i] + nums[i + 1:], tmp + [nums[i]])
 
-
-
+        backtrack(nums, [])
+        return res
 
 # 测试
 t = Solution()
-result = t.permute()
+result = t.permute([1,2,3,4,5])
 print(result)
