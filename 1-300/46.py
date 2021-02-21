@@ -30,5 +30,5 @@ class Solution:
 
 # 测试
 t = Solution()
-result = t.permute([1,2,3,4,5])
+result = t.permute([1,7,9,11])
 print(result)
