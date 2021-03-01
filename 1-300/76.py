@@ -14,49 +14,59 @@
 
 class Solution:
     def minWindow(self, s, t):
-        start, min_length, min_length_left = 0, float('inf'), float('inf')
+        tlens, slens = len(t), len(s)
+        if (slens == 0 or tlens == 0 or slens < tlens):
+            return ""
         left, right = 0, 0
-        needs =  {}
+        freqs, freqt = {}, {}
+
+        # 初始化数组S,T每个字母
+        for c in s:
+            if c not in freqs:
+                freqs[c] = 0
+            if c not in freqt:
+                freqt[c] = 0
+
+        # 统计数组T每个字母的频数
         for c in t :
-            if c not in needs :
-                needs[c] = 1
-        while(right <= len(s)):
-            temp_array = {}
-            temp = right - left
-            if temp < len(t):
-                right += 1
+            if c not in freqt:
+                return ""
+            freqt[c] += 1
+
+
+
+        # 滑动窗口内部包含多少个t中的字符，且对应字符频数超过不重复计算
+        freq_total = 0
+        minlen = slens + 1
+        begin = 0
+        while(right < slens):
+            if (freqt[s[right]] == 0):
+                right += 1;
                 continue
-            else:
-                for c in s[left:right]:
-                    aa = s[left:right]
-                    if c in needs:
-                        if c not in temp_array:
-                            temp_array[c] = 1
-                        else:
-                            temp_array[c] += 1
-                match = 0
-                for c in needs:
-                    if c not in temp_array:
-                        right += 1
-                        break
-                    elif needs[c] <= temp_array[c]:
-                        match += 1
-                    else:
-                        right += 1
-                        break
-                if (match == len(needs)):
-                    res = right - left
-                    # min_length = min(min_length,res)
-                    if min_length > res:
-                        min_length_left = left
-                        min_length = res
-                    left += 1
-        min_length_right = min_length_left + min_length
-        if min_length == float('inf'):
+            if (freqs[s[right]]< freqt[s[right]]):
+                freq_total += 1
+
+            freqs[s[right]] += 1
+            right += 1
+
+            while (freq_total == tlens):
+                if (right - left < minlen):
+                    minlen = right - left
+                    begin = left
+                if (freqt[s[left]] == 0):
+                    left += 1;
+                    continue
+                if (freqs[s[left]] == freqt[s[left]]):
+                    freq_total -= 1
+
+                freqs[s[left]] -= 1
+                left += 1
+
+        if minlen == slens + 1:
             return ""
         else:
-            return s[min_length_left: min_length_right]
+            return s[begin : begin+minlen]
 
 s = Solution()
-result = s.minWindow("ADOBECODEBANC","BAC")
+result = s.minWindow("A","B")
 print(result)
